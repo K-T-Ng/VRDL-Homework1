@@ -1,24 +1,26 @@
 import time
 import torch
 
+
 def Training_step(dataloader, device, model, optimizer, loss_fn):
     total_loss, num_correct = 0, 0
     for batch in dataloader:
         image, label, _ = batch
         image = image.to(device)
         label = label.to(device)
-        
+
         optimizer.zero_grad()
         predict, feature = model(image)
         loss = loss_fn(feature, predict, label)
         loss.backward()
         optimizer.step()
-        
+
         total_loss += loss.item() * image.size(0)
         num_correct += torch.sum(predict.argmax(dim=1) == label).item()
 
-        del image, batch        
+        del image, batch
     return total_loss, num_correct
+
 
 def Validation_step(dataloader, device, model, loss_fn):
     total_loss, num_correct = 0, 0
@@ -37,10 +39,11 @@ def Validation_step(dataloader, device, model, loss_fn):
             del image, batch
     return total_loss, num_correct
 
+
 def fit_an_epoch(device, model, optimizer, scheduler, loss_fn,
                  TrLoader, num_train, ValLoader, num_valid):
     start = time.time()
-    
+
     model.train()
     TrLoss, TrAcc = Training_step(TrLoader, device, model, optimizer, loss_fn)
 

@@ -2,6 +2,7 @@ import os
 import random
 from collections import defaultdict
 
+
 def construct_fold(loc, Mapping):
     '''
     For each key (label), pop 3 items from the value (namelist)
@@ -15,10 +16,11 @@ def construct_fold(loc, Mapping):
     fp.close()
 
 if __name__ == '__main__':
-    # read informations form training_labels.txt, we will got something like 
-    # [['4283.jpg, '115.Brewer_Sparrow'], ['3982.jpg', '162.Canada_Warbler'],..]
-    TrainLabel = [line.strip().split(' ') 
-             for line in open(os.path.join('dataset', 'training_labels.txt'))]
+    # read informations form training_labels.txt, we will got something like
+    # [['4283.jpg, '115.Brewer_Sparrow'],['3982.jpg', '162.Canada_Warbler'],..]
+    TrainLabel = [line.strip().split(' ')
+                  for line in open(os.path.join('dataset',
+                                                'training_labels.txt'))]
 
     # Construct a dictionary that maps label to list of filenames
     # we will got something like
@@ -40,6 +42,6 @@ if __name__ == '__main__':
         random.shuffle(namelist)
 
     # Write txt
-    for fold_id in range(1,6):
+    for fold_id in range(1, 6):
         construct_fold(loc=os.path.join('dataset', 'fold'+str(fold_id)+'.txt'),
-                       Mapping = Mapping)
+                       Mapping=Mapping)

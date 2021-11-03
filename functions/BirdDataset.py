@@ -7,6 +7,7 @@ from torchvision.io import read_image
 
 from .HelperFunction import read_folds, read_test
 
+
 class BirdDataset(Dataset):
     def __init__(self, root, imglist, lbllist, transform=None):
         self.root = root
@@ -31,29 +32,34 @@ class BirdDataset(Dataset):
 
         if self.mode == 'Testing':
             return img, img_name
-        
+
         # label part
         lbl = self.lbllist[index]
         return img, lbl, img_name
-    
+
+
 def Get_Train_Valid_Dataset(FoldID, train_tform=None, valid_tform=None):
-    train_fold = ['fold1.txt', 'fold2.txt', 'fold3.txt', 'fold4.txt', 'fold5.txt']
+    train_fold = ['fold1.txt', 'fold2.txt', 'fold3.txt',
+                  'fold4.txt', 'fold5.txt']
     valid_fold = ['fold' + str(FoldID) + '.txt']
     train_fold.remove(*valid_fold)
 
-    train_imglist, train_lbllist = read_folds(filelist = train_fold)
-    valid_imglist, valid_lbllist = read_folds(filelist = valid_fold)
+    train_imglist, train_lbllist = read_folds(filelist=train_fold)
+    valid_imglist, valid_lbllist = read_folds(filelist=valid_fold)
 
     # extract label id and modify 1-200 to 0-199
-    get_label = lambda label : int(label[:3])-1
+    def get_label(label):
+        return int(label[:3])-1
+
     train_lbllist = tuple(map(get_label, train_lbllist))
     valid_lbllist = tuple(map(get_label, valid_lbllist))
 
-    return BirdDataset('dataset', train_imglist, train_lbllist, train_tform),\
-           BirdDataset('dataset', valid_imglist, valid_lbllist, valid_tform)
+    trainDs = BirdDataset('dataset', train_imglist, train_lbllist, train_tform)
+    validDs = BirdDataset('dataset', valid_imglist, valid_lbllist, valid_tform)
+    return trainDs, validDs
+
 
 def Get_Test_Dataset(test_tform=None):
     imglist = read_test()
     lbllist = None
     return BirdDataset('dataset', imglist, lbllist, test_tform)
-

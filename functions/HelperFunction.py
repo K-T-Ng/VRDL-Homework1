@@ -2,27 +2,32 @@ import re
 import os
 import glob
 
-def read_classes_mapping(root = 'dataset', filename = 'classes.txt'):
+
+def read_classes_mapping(root='dataset', filename='classes.txt'):
     # {'001':'Black_footed_Albatross', ... }
     loc = os.path.join(root, filename)
     return dict([line.strip().split('.') for line in open(loc, 'r')])
 
-def read_folds(root = 'dataset', filelist = ['fold1.txt', 'fold2.txt']):
+
+def read_folds(root='dataset', filelist=['fold1.txt', 'fold2.txt']):
     pairs = []
     for filename in filelist:
         loc = os.path.join(root, filename)
         pairs += [line.strip().split(' ') for line in open(loc, 'r')]
     return zip(*pairs)
-        
-def read_test(root = 'dataset', filename = 'testing.txt'):
+
+
+def read_test(root='dataset', filename='testing.txt'):
     # ['1234.jpg', '1357.jpg', ...]
     loc = os.path.join(root, filename)
     return [line.strip() for line in open(loc, 'r')]
+
 
 def remove_with_prefix(root, prefix):
     for filename in glob.glob(os.path.join(root, prefix+'*')):
         os.remove(filename)
     return
+
 
 def read_models(root, model_cls):
     # Assume that there some .pth file in the folder
@@ -40,7 +45,7 @@ def read_models(root, model_cls):
         ID1, acc1 = parse(filename1)
         ID2, acc2 = parse(filename2)
         return acc1 > acc2
-    
+
     NameList = [None] * 5
     for filename in glob.glob(os.path.join(root, 'fold*')):
         ID, _ = parse(filename)
@@ -55,4 +60,3 @@ def read_models(root, model_cls):
             ModelList[-1].eval()
 
     return ModelList
-        
